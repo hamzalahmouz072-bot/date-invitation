@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Invitation</title>
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --primary-hover: #ff758f;
+            --bg-color: #fff0f3;
+            --text-color: #590d22;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.15);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Buttons styling */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .btn {
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-yes, .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-yes:hover, .btn-next:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-no {
+            background-color: #e0e0e0;
+            color: #333;
+            position: absolute;
+        }
+
+        /* Calendar and Time styling */
+        .datetime-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        input[type="date"] {
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .time-slot {
+            padding: 10px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .time-slot.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Food Grid styling */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ffe3e8;
+            border-radius: 10px;
+        }
+
+        .food-item {
+            border: 2px solid #f8f9fa;
+            border-radius: 12px;
+            padding: 15px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .food-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .food-item.selected {
+            border-color: var(--primary-color);
+            background-color: #fff0f3;
+        }
+
+        .food-emoji {
+            font-size: 2.5rem;
+        }
+
+        .food-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Final Page styling */
+        .summary-box {
+            background: #fff0f3;
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .summary-item {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .summary-item strong {
+            color: var(--primary-color);
+        }
+
+        .excited-msg {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .footer-msg {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PAGE 1: THE ASK -->
+        <div id="page1" class="page active">
+            <h1>Wanna go on a date with me?</h1>
+            <div class="btn-container" id="landing-buttons">
+                <button class="btn btn-yes" onclick="nextPage(2)" style="position: absolute; left: 25%;">Yes</button>
+                <button class="btn btn-no" id="no-btn" style="right: 25%;">No</button>
+            </div>
+        </div>
+
+        <!-- PAGE 2: DATE & TIME -->
+        <div id="page2" class="page">
+            <h1>When you are free??</h1>
+            <div class="datetime-container">
+                <input type="date" id="date-picker" required>
+                <h3>Select a time:</h3>
+                <div class="time-slots" id="time-slots-container">
+                    <!-- JavaScript will insert slots here -->
+                </div>
+                <button class="btn btn-next" onclick="goToFoodPage()" style="margin-top: 20px;">Confirm</button>
+            </div>
+        </div>
+
+        <!-- PAGE 3: FOOD SELECTION -->
+        <div id="page3" class="page">
+            <h1>What would you like to eat?</h1>
+            <p>Pick your favorite choice!</p>
+            <div class="food-grid" id="food-grid-container">
+                <!-- 15 Food items generated by JS -->
+            </div>
+            <button class="btn btn-next" onclick="goToFinalPage()">Next</button>
+        </div>
+
+        <!-- PAGE 4: CONFIRMATION -->
+        <div id="page4" class="page">
+            <h1>YAY! It's a date! 🎉</h1>
+            <p class="excited-msg">I'm absolutely thrilled and I'm already counting down the hours until I get to see you! It's going to be an amazing time together. ❤️</p>
+            
+            <div class="summary-box">
+                <div class="summary-item">📅 <strong>Date:</strong> <span id="final-date"></span></div>
+                <div class="summary-item">⏰ <strong>Time:</strong> <span id="final-time"></span></div>
+                <div class="summary-item">🍔 <strong>Food Choice:</strong> <span id="final-food"></span></div>
+            </div>
+
+            <div class="footer-msg">I can't wait to see you!</div>
+        </div>
+    </div>
+
+    <script>
+        // --- SELECTIONS STORAGE ---
+        let selectedDate = "";
+        let selectedTime = "";
+        let selectedFood = "";
+
+        // --- PAGE NAVIGATION ---
+        function nextPage(pageNumber) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page${pageNumber}`).classList.add('active');
+        }
+
+        // --- PAGE 1: RUNAWAY NO BUTTON ---
+        const noBtn = document.getElementById('no-btn');
+        const container = document.getElementById('landing-buttons');
+
+        function moveNoButton() {
+            // Get container dimensions to restrict movement safely inside it
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Safe zones to prevent going over the "Yes" button (which is on the left side)
+            // We force the "No" button to dance around the right, top, or bottom edges safely
+            const maxW = containerRect.width - btnRect.width;
+            const maxH = 150; // Extra vertical movement room
+
+            let randomX = Math.random() * maxW;
+            let randomY = (Math.random() * maxH) - 50; // Allows going slightly up or down
+
+            // Avoid overlapping the Yes button area (left 40% of container)
+            if (randomX < containerRect.width * 0.4) {
+                randomX = containerRect.width * 0.5 + Math.random() * (containerRect.width * 0.4);
+            }
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.right = 'auto'; // Disable initial CSS right orientation
+        }
+
+        // Moves on both hover (desktop) and touch/click (mobile)
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // --- PAGE 2: TIME SLOTS GENERATION ---
+        const times = ["12:00 PM", "1:00 PM", "2:30 PM", "6:00 PM", "7:30 PM", "8:45 PM"];
+        const slotsContainer = document.getElementById('time-slots-container');
+
+        times.forEach(time => {
+            const slot = document.createElement('div');
+            slot.classList.add('time-slot');
+            slot.innerText = time;
+            slot.onclick = () => {
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+                selectedTime = time;
+            };
+            slotsContainer.appendChild(slot);
+        });
+
+        function goToFoodPage() {
+            selectedDate = document.getElementById('date-picker').value;
+            if(!selectedDate || !selectedTime) {
+                alert("Please select both a date and a time! 😊");
+                return;
+            }
+            nextPage(3);
+        }
+
+        // --- PAGE 3: 15 FOOD ITEMS LIST ---
+        const foods = [
+            { name: "Pizza", emoji: "🍕" }, { name: "Burger & Fries", emoji: "🍔" },
+            { name: "Sushi", emoji: "🍣" }, { name: "Pasta", emoji: "🍝" },
+            { name: "Tacos", emoji: "🌮" }, { name: "Steak", emoji: "🥩" },
+            { name: "Ramen", emoji: "🍜" }, { name: "Fried Chicken", emoji: "🍗" },
+            { name: "Salad", emoji: "🥗" }, { name: "Seafood", emoji: "🦪" },
+            { name: "Pancakes", emoji: "🥞" }, { name: "Ice Cream", emoji: "🍦" },
+            { name: "Waffles", emoji: "🧇" }, { name: "Donuts", emoji: "🍩" },
+            { name: "Surprise Me!", emoji: "🎁" }
+        ];
+
+        const foodGrid = document.getElementById('food-grid-container');
+        foods.forEach(food => {
+            const item = document.createElement('div');
+            item.classList.add('food-item');
+            item.innerHTML = `
+                <span class="food-emoji">${food.emoji}</span>
+                <span class="food-name">${food.name}</span>
+            `;
+            item.onclick = () => {
+                document.querySelectorAll('.food-item').forEach(f => f.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedFood = food.name + " " + food.emoji;
+            };
+            foodGrid.appendChild(item);
+        });
+
+        function goToFinalPage() {
+            if(!selectedFood) {
+                alert("Please pick something to eat! 😋");
+                return;
+            }
+            
+            // Format date nicely
+            const dateObj = new Date(selectedDate);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = dateObj.toLocaleDateString('en-US', options);
+
+            // Set final summary values
+            document.getElementById('final-date').innerText = formattedDate;
+            document.getElementById('final-time').innerText = selectedTime;
+            document.getElementById('final-food').innerText = selectedFood;
+
+            nextPage(4);
+        }
+    </script>
+</body>
+</html>
